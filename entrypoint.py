@@ -1,4 +1,4 @@
-from game.Runner import start
+from engine.Driver import main
 
 if __name__ == '__main__':
-    start()
+    main()

@@ -7,15 +7,15 @@ from collections import defaultdict
 import pygame
 
 # Project package imports
-from game.GameState import GameState
-from game.Renderer import Renderer
+from engine.GameState import GameState
+from engine.Renderer import Renderer
 
 # Constants
 TARGET_FPS = 60
 LOOP_MS_PF = (1 / TARGET_FPS) * 1000
 
 # Class definition
-class Runner:
+class Driver:
     # Constructor function, creates new instance of class
     def __init__(self): # 0 additional arguments, self is self-reference
         pygame.init()
@@ -96,4 +96,4 @@ def main():
     # Sets logging to display on information logs and above
     logging.basicConfig(level=logging.INFO)
     # Start the game
-    Runner().start()
+    Driver().start()
