@@ -1,11 +1,21 @@
 import pygame
 
+from engine.Spritesheet import Spritesheet
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, options):
         pygame.sprite.Sprite.__init__(self)
-        self.rect = pygame.rect.Rect(options.x, options.y, options.w, options.h)
+        
         self.color = options.color
         self.speed = options.speed
+
+        self.spritesheet = Spritesheet("") # TODO: Load in sample spritesheet
+
+        # TODO: Set up walking frame arrays (ideally via some config code)
+
+        # self.image = some reference to a blit image
+        # self.rect = self.image.get_rect(), or more static bounding box for AABB (axis-aligned bounding box)
+        self.rect = pygame.rect.Rect(options.x, options.y, options.w, options.h)
 
         self.moving = False
         self.moving_left = False
