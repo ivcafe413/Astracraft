@@ -9,7 +9,8 @@ class Renderer:
     def render(self):
         self.screen.fill((34, 139, 34)) # Test Forest Green
         self.draw()
-        pygame.display.update()
+        # pygame.display.update() # Optimized, but not OpenGL friendly
+        pygame.display.flip()
 
     def draw(self):
         # for o in self.game.gameObjects:
