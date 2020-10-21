@@ -4,18 +4,19 @@ from engine.Spritesheet import Spritesheet
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, options):
-        pygame.sprite.Sprite.__init__(self)
+        super().__init__()
         
         self.color = options.color
         self.speed = options.speed
 
-        self.spritesheet = Spritesheet("") # TODO: Load in sample spritesheet
+        self.spritesheet = Spritesheet("MC_TopView.png") # Starting with TopView
+        self.image = self.spritesheet.getImage(0, 0, 25, 46)
 
         # TODO: Set up walking frame arrays (ideally via some config code)
 
         # self.image = some reference to a blit image
-        # self.rect = self.image.get_rect(), or more static bounding box for AABB (axis-aligned bounding box)
-        self.rect = pygame.rect.Rect(options.x, options.y, options.w, options.h)
+        self.rect = self.image.get_rect() # or more static bounding box for AABB (axis-aligned bounding box)
+        # self.rect = pygame.rect.Rect(options.x, options.y, options.w, options.h)
 
         self.moving = False
         self.moving_left = False
@@ -64,5 +65,6 @@ class Player(pygame.sprite.Sprite):
             
         self.move(dx, dy)
 
-    def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.rect)
+    # def draw(self, surface):
+    #     # pygame.draw.rect(surface, self.color, self.rect)
+    #     self.draw(surface)

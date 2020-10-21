@@ -19,18 +19,18 @@ class Driver:
     # Constructor function, creates new instance of class
     def __init__(self): # 0 additional arguments, self is self-reference
         pygame.init()
+
+        # Renderer, handles rendering functions on behalf of the game
+        rendererOptions = type('', (), {})()
+        rendererOptions.width = 800
+        rendererOptions.height = 600
+        self.gameRenderer = Renderer(rendererOptions)
+        # Renderer before GameState, since Spritesheet depends on display.set_mode
         
         # Game state object, tracks state of game and all objects in game
         self.gameState = GameState() # Example of tightly coupled code.
         # TODO: Refactor coupled code, separate dependencies
-
-        # Renderer, handles rendering functions on behalf of the game
-        rendererOptions = type('', (), {})()
-        rendererOptions.game = self.gameState
-        rendererOptions.width = 800
-        rendererOptions.height = 600
-        self.gameRenderer = Renderer(rendererOptions)
-        # TODO: Separate dependencies
+        self.gameRenderer.game = self.gameState
 
         # Internal variables to handle frame ticks/FPS
         self.clock = pygame.time.Clock()

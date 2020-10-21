@@ -1,8 +1,12 @@
+import pygame
+
 from engine.actors.Player import Player # TODO: Dependency Injection to handle game object types
 
 class GameState:
     def __init__(self):
-        self.gameObjects = [] # Array of game objects
+        # self.gameObjects = [] # Array of game objects
+        # Now using SpriteGroup
+        self.gameObjects = pygame.sprite.Group()
 
         # Method to create anonymous object
         options = type('', (), {})()
@@ -15,7 +19,8 @@ class GameState:
         options.color = (128, 128, 128)
 
         self.player = Player(options) # TODO: Dependency injection
-        self.gameObjects.append(self.player)
+        # self.gameObjects.append(self.player)
+        self.gameObjects.add(self.player)
 
         # Player Actions Available (type == Key Up or Down)
     def action_left(self, type):
