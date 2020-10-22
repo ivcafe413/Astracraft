@@ -4,12 +4,14 @@ from engine.Spritesheet import Spritesheet
 class Renderer:
     def __init__(self, options):
         self.screen = pygame.display.set_mode((options.width, options.height))
+        self.debugSurface = pygame.surface.Surface((options.width, options.height))
         # Setting game in Driver now
         # self.game = options.game
 
     def render(self):
         # self.screen.fill((34, 139, 34)) # Test Forest Green
         self.draw()
+        self.drawDebug()
         # pygame.display.update() # Optimized, but not OpenGL friendly
         pygame.display.flip()
 
@@ -22,7 +24,7 @@ class Renderer:
         Background = self.spritesheet.getImage(1, 1, 50, 50)
         for i in range(12):
             for j in range(16):
-                # self.screen.blit(Background, [x, y])
+                self.screen.blit(Background, [x, y])
                 x = x + 50
             x = 0
             y = y + 50
@@ -31,4 +33,4 @@ class Renderer:
     def drawDebug(self):
         # Anything that prints to screen that is debug can go here
         for o in self.game.gameObjects:
-            o.drawDebug(self.screen)
+            o.drawDebug(self.screen )
