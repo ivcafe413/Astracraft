@@ -23,6 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.moving_right = False
         self.moving_up = False
         self.moving_down = False
+        self.direction = None
 
         self.collidable = True
 
@@ -31,16 +32,16 @@ class Player(pygame.sprite.Sprite):
     def toggle_movement(self, direction):
         if direction == 'left':
             self.moving_left = not self.moving_left
-            self.image = self.spritesheet.getImage(263, 6, 24, 45)
+            # self.image = self.spritesheet.getImage(263, 6, 24, 45)
         elif direction == 'right':
             self.moving_right = not self.moving_right
-            self.image = self.spritesheet.getImage(363, 6, 24, 45)
+            # self.image = self.spritesheet.getImage(363, 6, 24, 45)
         elif direction == 'up':
             self.moving_up = not self.moving_up
-            self.image = self.spritesheet.getImage(63, 6, 24, 45)
+            # self.image = self.spritesheet.getImage(63, 6, 24, 45)
         elif direction == 'down':
             self.moving_down = not self.moving_down
-            self.image = self.spritesheet.getImage(163, 6, 24, 45)
+            # self.image = self.spritesheet.getImage(163, 6, 24, 45)
 
     def move(self, dx, dy):
         self.rect = self.rect.move(dx, dy)
@@ -48,21 +49,34 @@ class Player(pygame.sprite.Sprite):
     def update(self):
         # Movement Update
         self.moving = False
+        self.direction = ""
         if self.moving_left:
             dx = -(min(self.speed, self.rect.left))
             self.moving = True
+            self.direction = 'left '
+            self.image = self.spritesheet.getImage(263, 6, 24, 45)
         elif self.moving_right:
             dx = min(self.speed, 800 - self.rect.right)
             self.moving = True
+            self.direction = 'right '
+            self.image = self.spritesheet.getImage(363, 6, 24, 45)
         if self.moving_up:
             dy = -(min(self.speed, self.rect.top))
             self.moving = True
+            self.direction += 'up'
+            self.image = self.spritesheet.getImage(63, 6, 24, 45)
         elif self.moving_down:
             dy = min(self.speed, 600 - self.rect.bottom)
             self.moving = True
+            self.direction += 'down'
+            self.image = self.spritesheet.getImage(163, 6, 24, 45)
             
         if not self.moving:
+            self.direction = None
+            self.image = self.spritesheet.getImage(163, 6, 24, 45)
             return
+
+        self.direction = self.direction.strip()
             
         if not 'dx' in vars():
             dx = 0
@@ -72,5 +86,13 @@ class Player(pygame.sprite.Sprite):
         self.move(dx, dy)
 
     # def draw(self, surface):
-    #     # pygame.draw.rect(surface, self.color, self.rect)
     #     self.draw(surface)
+
+    def drawDebug(self, surface):
+        # font = pygame.font.Font(pygame.font.get_default_font(), 12)
+        font = pygame.font.SysFont("sysfont10", 12)
+        text = font.render("Direction: %s" % self.direction, False, (255, 255, 255))
+        # textRect = text.get_rect()
+
+        # surface.blit(text, textRect)
+        surface.blit(text, (0, 0))

@@ -27,3 +27,8 @@ class Renderer:
             x = 0
             y = y + 50
         self.game.gameObjects.draw(self.screen)
+
+    def drawDebug(self):
+        # Anything that prints to screen that is debug can go here
+        for o in self.game.gameObjects:
+            o.drawDebug(self.screen)

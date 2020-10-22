@@ -84,6 +84,7 @@ class Driver:
 
             # Once game state is caught up, render the game
             self.gameRenderer.render() # TODO: Passing in leftover ticks for delta rendering?
+            self.gameRenderer.drawDebug() # TODO: Need to comment this out for live
 
             # Tracking FPS in window caption, should be for debug only
             fps = self.clock.get_fps()
