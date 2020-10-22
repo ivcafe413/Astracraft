@@ -9,8 +9,8 @@ class Player(pygame.sprite.Sprite):
         self.color = options.color
         self.speed = options.speed
 
-        self.spritesheet = Spritesheet("MC_TopView.png") # Starting with TopView
-        self.image = self.spritesheet.getImage(0, 0, 25, 46)
+        self.spritesheet = Spritesheet("MC_TopViewSheet.png") # Starting with TopView
+        self.image = self.spritesheet.getImage(163, 6, 24, 45)
 
         # TODO: Set up walking frame arrays (ideally via some config code)
 
@@ -26,15 +26,21 @@ class Player(pygame.sprite.Sprite):
 
         self.collidable = True
 
+        self.CoolDown = 300
+
     def toggle_movement(self, direction):
         if direction == 'left':
             self.moving_left = not self.moving_left
+            self.image = self.spritesheet.getImage(263, 6, 24, 45)
         elif direction == 'right':
             self.moving_right = not self.moving_right
+            self.image = self.spritesheet.getImage(363, 6, 24, 45)
         elif direction == 'up':
             self.moving_up = not self.moving_up
+            self.image = self.spritesheet.getImage(63, 6, 24, 45)
         elif direction == 'down':
             self.moving_down = not self.moving_down
+            self.image = self.spritesheet.getImage(163, 6, 24, 45)
 
     def move(self, dx, dy):
         self.rect = self.rect.move(dx, dy)

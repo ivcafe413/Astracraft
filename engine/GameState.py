@@ -18,7 +18,7 @@ class GameState:
         options.speed = 3
         options.color = (128, 128, 128)
 
-        self.player = Player(options) # TODO: Dependency injection
+        self.player = Player(options) # TODO: Dependency injection 
         # self.gameObjects.append(self.player)
         self.gameObjects.add(self.player)
 
