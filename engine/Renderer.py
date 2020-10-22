@@ -22,7 +22,7 @@ class Renderer:
         Background = self.spritesheet.getImage(1, 1, 50, 50)
         for i in range(12):
             for j in range(16):
-                self.screen.blit(Background, [x, y])
+                # self.screen.blit(Background, [x, y])
                 x = x + 50
             x = 0
             y = y + 50

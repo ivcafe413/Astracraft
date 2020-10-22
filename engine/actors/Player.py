@@ -95,4 +95,7 @@ class Player(pygame.sprite.Sprite):
         # textRect = text.get_rect()
 
         # surface.blit(text, textRect)
+        # xwidth = 800
+        # yhight = 600
+        # self.screen = pygame.surface.Surface((800, 600))
         surface.blit(text, (0, 0))
