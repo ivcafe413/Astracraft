@@ -96,7 +96,7 @@ class Player(GObject):
             self.moving = True
             self.direction = 'right '
             self.image = self.spritesheet.getImage(368, 5, 16, 45)
-            frame = (pos // 30) % len(self.WalkUp)
+            frame = (pos // 30) % len(self.WalkRight)
             self.image = self.WalkRight[frame]
         if self.moving_up:
             dy = -(min(self.speed, self.rect.top))
@@ -110,7 +110,7 @@ class Player(GObject):
             self.moving = True
             self.direction += 'down'
             self.image = self.spritesheet.getImage(163, 6, 24, 44)
-            frame = (pos // 30) % len(self.WalkUp)
+            frame = (pos // 30) % len(self.WalkDown)
             self.image = self.WalkDown[frame]
             
         if not self.moving:
