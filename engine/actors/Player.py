@@ -27,21 +27,66 @@ class Player(pygame.sprite.Sprite):
 
         self.collidable = True
 
-        self.CoolDown = 300
+        self.WalkUp = []
+        self.WalkDown = []
+        self.WalkLeft = []
+        self.WalkRight = []
+
+        self.spritesheet = Spritesheet("MC_TopViewSheet.png")
+        image = self.spritesheet.getImage(13, 6, 24, 45)
+        self.WalkUp.append(image)
+        image = self.spritesheet.getImage(63, 6, 24, 44)
+        self.WalkUp.append(image)
+        image = self.spritesheet.getImage(13, 55, 24, 45)
+        self.WalkUp.append(image)
+        image = self.spritesheet.getImage(113, 6, 24, 45)
+        self.WalkDown.append(image)
+        image = self.spritesheet.getImage(163, 6, 24, 44)
+        self.WalkDown.append(image)
+        image = self.spritesheet.getImage(113, 55, 24, 45)
+        self.WalkDown.append(image)
+        image = self.spritesheet.getImage(221, 5, 16, 45)
+        self.WalkLeft.append(image)
+        image = self.spritesheet.getImage(267, 5, 16, 45)
+        self.WalkLeft.append(image)
+        image = self.spritesheet.getImage(220, 55, 16, 45)
+        self.WalkLeft.append(image)
+        image = self.spritesheet.getImage(318, 5, 16, 45)
+        self.WalkRight.append(image)
+        image = self.spritesheet.getImage(368, 5, 16, 45)
+        self.WalkRight.append(image)
+        image = self.spritesheet.getImage(319, 55, 16, 45)
+        self.WalkRight.append(image)
 
     def toggle_movement(self, direction):
         if direction == 'left':
             self.moving_left = not self.moving_left
             # self.image = self.spritesheet.getImage(263, 6, 24, 45)
+            # pos = self.rect.x + self.screen.world_shift
+            pos = 30
+            frame = (pos // 30) % len(self.WalkLeft)
+            self.image = self.WalkLeft[frame]
         elif direction == 'right':
             self.moving_right = not self.moving_right
             # self.image = self.spritesheet.getImage(363, 6, 24, 45)
+            # pos = self.rect.x + self.screen.world_shift
+            pos = 30
+            frame = (pos // 30) % len(self.WalkRight)
+            self.image = self.WalkRight[frame]
         elif direction == 'up':
             self.moving_up = not self.moving_up
             # self.image = self.spritesheet.getImage(63, 6, 24, 45)
+            # pos = self.rect.x + self.screen.world_shift
+            pos = 30
+            frame = (pos // 30) % len(self.WalkUp)
+            self.image = self.WalkUp[frame]
         elif direction == 'down':
             self.moving_down = not self.moving_down
             # self.image = self.spritesheet.getImage(163, 6, 24, 45)
+            # pos = self.rect.x + self.screen.world_shift
+            pos = 30
+            frame = (pos // 30) % len(self.WalkUp)
+            self.image = self.WalkUp[frame]
 
     def move(self, dx, dy):
         self.rect = self.rect.move(dx, dy)
