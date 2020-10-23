@@ -56,7 +56,7 @@ class Player(GObject):
         self.WalkLeft.append(image)
         image = self.spritesheet.getImage(318, 5, 16, 45)
         self.WalkRight.append(image)
-        image = self.spritesheet.getImagec
+        image = self.spritesheet.getImage(368, 5, 16, 45)
         self.WalkRight.append(image)
         image = self.spritesheet.getImage(319, 55, 16, 45)
         self.WalkRight.append(image)
