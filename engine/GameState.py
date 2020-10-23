@@ -1,6 +1,7 @@
 import pygame
 
 from engine.actors.Player import Player # TODO: Dependency Injection to handle game object types
+from engine.actors.Hitzone import Hitzone
 
 class GameState:
     def __init__(self):
@@ -21,6 +22,17 @@ class GameState:
         self.player = Player(options) # TODO: Dependency injection 
         # self.gameObjects.append(self.player)
         self.gameObjects.add(self.player)
+
+        # First Hitzone
+        hitzoneOptions = type('', (), {})()
+        hitzoneOptions.x = 400
+        hitzoneOptions.y = 0
+        hitzoneOptions.w = 20
+        hitzoneOptions.h = 20
+        hitzoneOptions.color = (255, 0, 0)
+
+        self.hitzone = Hitzone(hitzoneOptions)
+        self.gameObjects.add(self.hitzone)
 
         # Player Actions Available (type == Key Up or Down)
     def action_left(self, type):

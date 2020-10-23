@@ -1,12 +1,13 @@
 import pygame
 
 from engine.Spritesheet import Spritesheet
+from engine.actors.GObject import GObject
 
-class Player(pygame.sprite.Sprite):
+class Player(GObject):
     def __init__(self, options):
-        super().__init__()
+        super().__init__(options)
         
-        self.color = options.color
+        # self.color = options.color
         self.speed = options.speed
 
         self.spritesheet = Spritesheet("MC_TopViewSheet.png") # Starting with TopView
@@ -16,16 +17,18 @@ class Player(pygame.sprite.Sprite):
 
         # self.image = some reference to a blit image
         self.rect = self.image.get_rect() # or more static bounding box for AABB (axis-aligned bounding box)
+        self.rect.x = options.x
+        self.rect.y = options.y
         # self.rect = pygame.rect.Rect(options.x, options.y, options.w, options.h)
 
-        self.moving = False
+        # self.moving = False # Set in GObject
         self.moving_left = False
         self.moving_right = False
         self.moving_up = False
         self.moving_down = False
         self.direction = None
 
-        self.collidable = True
+        self.collidable = True # Override Collidable
 
         self.WalkUp = []
         self.WalkDown = []
@@ -135,10 +138,10 @@ class Player(pygame.sprite.Sprite):
 
     def drawDebug(self, surface):
         # font = pygame.font.Font(pygame.font.get_default_font(), 12)
-        font = pygame.font.SysFont("sysfont10", 30)
+        font = pygame.font.SysFont("sysfont10", 24)
         text = font.render("Direction: %s" % self.direction, False, (255, 255, 255))
         textRect = text.get_rect()
-        surface.fill((255, 0, 255))
+        # surface.fill((255, 0, 255))
         surface.blit(text, textRect)
         # xwidth = 800
         # yhight = 600
