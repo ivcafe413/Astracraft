@@ -10,6 +10,8 @@ import pygame
 from engine.GameState import GameState
 from engine.Renderer import Renderer
 
+from constants import VICTORY_EVENT
+
 # Constants
 TARGET_FPS = 60
 LOOP_MS_PF = (1 / TARGET_FPS) * 1000
@@ -53,6 +55,16 @@ class Driver:
             elif event.type == pygame.KEYUP:
                 for handler in self.keyupHandlers[event.key]:
                     handler(event.type)
+            elif event.type == VICTORY_EVENT:
+                font = pygame.font.SysFont("sysfont10", 48)
+                text = font.render("VICTORY!!!", False, (255, 255, 255))
+                textRect = text.get_rect()
+                textRect.center = (400, 300)
+                self.gameRenderer.screen.blit(text, textRect)
+                pygame.display.flip()
+                pygame.time.wait(1500)
+                pygame.quit()
+                sys.exit(0)
 
     def start(self):
         # Initial Key Bindings
