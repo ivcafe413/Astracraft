@@ -90,12 +90,12 @@ class Player(pygame.sprite.Sprite):
 
     def drawDebug(self, surface):
         # font = pygame.font.Font(pygame.font.get_default_font(), 12)
-        font = pygame.font.SysFont("sysfont10", 32)
+        font = pygame.font.SysFont("sysfont10", 30)
         text = font.render("Direction: %s" % self.direction, False, (255, 255, 255))
-        # textRect = text.get_rect()
-
-        # surface.blit(text, textRect)
+        textRect = text.get_rect()
+        surface.fill((255, 0, 255))
+        surface.blit(text, textRect)
         # xwidth = 800
         # yhight = 600
         # self.screen = pygame.surface.Surface((800, 600))
-        surface.blit(text, (0, 0))
+        # surface.blit(text, (0, 0))
