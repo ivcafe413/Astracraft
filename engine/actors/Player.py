@@ -56,7 +56,7 @@ class Player(GObject):
         self.WalkLeft.append(image)
         image = self.spritesheet.getImage(318, 5, 16, 45)
         self.WalkRight.append(image)
-        image = self.spritesheet.getImage(368, 5, 16, 45)
+        image = self.spritesheet.getImagec
         self.WalkRight.append(image)
         image = self.spritesheet.getImage(319, 55, 16, 45)
         self.WalkRight.append(image)
@@ -65,31 +65,15 @@ class Player(GObject):
         if direction == 'left':
             self.moving_left = not self.moving_left
             # self.image = self.spritesheet.getImage(263, 6, 24, 45)
-            # pos = self.rect.x + self.screen.world_shift
-            pos = 30
-            frame = (pos // 30) % len(self.WalkLeft)
-            self.image = self.WalkLeft[frame]
         elif direction == 'right':
             self.moving_right = not self.moving_right
             # self.image = self.spritesheet.getImage(363, 6, 24, 45)
-            # pos = self.rect.x + self.screen.world_shift
-            pos = 30
-            frame = (pos // 30) % len(self.WalkRight)
-            self.image = self.WalkRight[frame]
         elif direction == 'up':
             self.moving_up = not self.moving_up
             # self.image = self.spritesheet.getImage(63, 6, 24, 45)
-            # pos = self.rect.x + self.screen.world_shift
-            pos = 30
-            frame = (pos // 30) % len(self.WalkUp)
-            self.image = self.WalkUp[frame]
         elif direction == 'down':
             self.moving_down = not self.moving_down
             # self.image = self.spritesheet.getImage(163, 6, 24, 45)
-            # pos = self.rect.x + self.screen.world_shift
-            pos = 30
-            frame = (pos // 30) % len(self.WalkUp)
-            self.image = self.WalkUp[frame]
 
     def move(self, dx, dy):
         self.rect = self.rect.move(dx, dy)
@@ -98,26 +82,36 @@ class Player(GObject):
         # Movement Update
         self.moving = False
         self.direction = ""
+        pos = self.rect.x + self.screen.world_shift
+        # pos = 100
         if self.moving_left:
             dx = -(min(self.speed, self.rect.left))
             self.moving = True
             self.direction = 'left '
-            self.image = self.spritesheet.getImage(268, 5, 16, 45)
+            self.image = self.spritesheet.getImage(267, 5, 16, 45)
+            frame = (pos // 30) % len(self.WalkLeft)
+            self.image = self.WalkLeft[frame]
         elif self.moving_right:
             dx = min(self.speed, 800 - self.rect.right)
             self.moving = True
             self.direction = 'right '
             self.image = self.spritesheet.getImage(368, 5, 16, 45)
+            frame = (pos // 30) % len(self.WalkUp)
+            self.image = self.WalkRight[frame]
         if self.moving_up:
             dy = -(min(self.speed, self.rect.top))
             self.moving = True
             self.direction += 'up'
-            self.image = self.spritesheet.getImage(63, 6, 24, 45)
+            self.image = self.spritesheet.getImage(63, 6, 24, 44)
+            frame = (pos // 30) % len(self.WalkUp)
+            self.image = self.WalkUp[frame]
         elif self.moving_down:
             dy = min(self.speed, 600 - self.rect.bottom)
             self.moving = True
             self.direction += 'down'
-            self.image = self.spritesheet.getImage(163, 6, 24, 45)
+            self.image = self.spritesheet.getImage(163, 6, 24, 44)
+            frame = (pos // 30) % len(self.WalkUp)
+            self.image = self.WalkDown[frame]
             
         if not self.moving:
             self.direction = None
