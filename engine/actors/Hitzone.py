@@ -8,9 +8,11 @@ class Hitzone(GObject):
 
         self.collidable = True
     
-    # def draw(self, surface):
-    #     pass
+    def playerhit(self, player):
+        # Occurs on player hitting a hitzone
+        pass
 
     def drawDebug(self, surface):
         # pygame.draw.rect(surface, self.color, self.rect)
-        surface.blit(self.image, self.rect)
+        # surface.blit(self.image, self.rect)
+        pass

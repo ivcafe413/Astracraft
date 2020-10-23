@@ -34,32 +34,21 @@ class Player(GObject):
         self.WalkDown = []
         self.WalkLeft = []
         self.WalkRight = []
+        self.frameIndex = 0
 
         self.spritesheet = Spritesheet("MC_TopViewSheet.png")
-        image = self.spritesheet.getImage(13, 6, 24, 45)
-        self.WalkUp.append(image)
-        image = self.spritesheet.getImage(63, 6, 24, 44)
-        self.WalkUp.append(image)
-        image = self.spritesheet.getImage(13, 55, 24, 45)
-        self.WalkUp.append(image)
-        image = self.spritesheet.getImage(113, 6, 24, 45)
-        self.WalkDown.append(image)
-        image = self.spritesheet.getImage(163, 6, 24, 44)
-        self.WalkDown.append(image)
-        image = self.spritesheet.getImage(113, 55, 24, 45)
-        self.WalkDown.append(image)
-        image = self.spritesheet.getImage(221, 5, 16, 45)
-        self.WalkLeft.append(image)
-        image = self.spritesheet.getImage(267, 5, 16, 45)
-        self.WalkLeft.append(image)
-        image = self.spritesheet.getImage(220, 55, 16, 45)
-        self.WalkLeft.append(image)
-        image = self.spritesheet.getImage(318, 5, 16, 45)
-        self.WalkRight.append(image)
-        image = self.spritesheet.getImage(368, 5, 16, 45)
-        self.WalkRight.append(image)
-        image = self.spritesheet.getImage(319, 55, 16, 45)
-        self.WalkRight.append(image)
+        self.WalkUp.append(self.spritesheet.getImage(13, 6, 24, 45))
+        self.WalkUp.append(self.spritesheet.getImage(63, 6, 24, 44))
+        self.WalkUp.append(self.spritesheet.getImage(13, 55, 24, 45))
+        self.WalkDown.append(self.spritesheet.getImage(113, 6, 24, 45))
+        self.WalkDown.append(self.spritesheet.getImage(163, 6, 24, 44))
+        self.WalkDown.append(self.spritesheet.getImage(113, 55, 24, 45))
+        self.WalkLeft.append(self.spritesheet.getImage(221, 5, 16, 45))
+        self.WalkLeft.append(self.spritesheet.getImage(267, 5, 16, 45))
+        self.WalkLeft.append(self.spritesheet.getImage(220, 55, 16, 45))
+        self.WalkRight.append(self.spritesheet.getImage(318, 5, 16, 45))
+        self.WalkRight.append(self.spritesheet.getImage(368, 5, 16, 45))
+        self.WalkRight.append(self.spritesheet.getImage(319, 55, 16, 45))
 
     def toggle_movement(self, direction):
         if direction == 'left':
@@ -79,46 +68,58 @@ class Player(GObject):
         self.rect = self.rect.move(dx, dy)
 
     def update(self):
+        self.frameIndex += 1
         # Movement Update
         self.moving = False
         self.direction = ""
-        pos = self.rect.x + self.screen.world_shift
+        frameArray = None
+        # pos = self.rect.x + self.screen.world_shift
         # pos = 100
         if self.moving_left:
             dx = -(min(self.speed, self.rect.left))
             self.moving = True
             self.direction = 'left '
             self.image = self.spritesheet.getImage(267, 5, 16, 45)
-            frame = (pos // 30) % len(self.WalkLeft)
-            self.image = self.WalkLeft[frame]
+            # frame = (pos // 30) % len(self.WalkLeft)
+            # self.image = self.WalkLeft[frame]
+            frameArray = self.WalkLeft
         elif self.moving_right:
             dx = min(self.speed, 800 - self.rect.right)
             self.moving = True
             self.direction = 'right '
             self.image = self.spritesheet.getImage(368, 5, 16, 45)
-            frame = (pos // 30) % len(self.WalkUp)
-            self.image = self.WalkRight[frame]
+            # frame = (pos // 30) % len(self.WalkUp)
+            # self.image = self.WalkRight[frame]
+            frameArray = self.WalkRight
         if self.moving_up:
             dy = -(min(self.speed, self.rect.top))
             self.moving = True
             self.direction += 'up'
             self.image = self.spritesheet.getImage(63, 6, 24, 44)
-            frame = (pos // 30) % len(self.WalkUp)
-            self.image = self.WalkUp[frame]
+            # frame = (pos // 30) % len(self.WalkUp)
+            # self.image = self.WalkUp[frame]
+            frameArray = self.WalkUp
         elif self.moving_down:
             dy = min(self.speed, 600 - self.rect.bottom)
             self.moving = True
             self.direction += 'down'
             self.image = self.spritesheet.getImage(163, 6, 24, 44)
-            frame = (pos // 30) % len(self.WalkUp)
-            self.image = self.WalkDown[frame]
+            # frame = (pos // 30) % len(self.WalkUp)
+            # self.image = self.WalkDown[frame]
+            frameArray = self.WalkDown
             
         if not self.moving:
             self.direction = None
             self.image = self.spritesheet.getImage(163, 6, 24, 45)
+            self.frameIndex = 0
+            frameArray = None
             return
 
         self.direction = self.direction.strip()
+
+        if self.frameIndex >= len(frameArray):
+            self.frameIndex = 0
+        self.image = frameArray[self.frameIndex]
             
         if not 'dx' in vars():
             dx = 0
