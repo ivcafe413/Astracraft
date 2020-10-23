@@ -117,9 +117,10 @@ class Player(GObject):
 
         self.direction = self.direction.strip()
 
-        if self.frameIndex >= len(frameArray):
+        divisorFrame = (self.frameIndex // 6)
+        if divisorFrame >= len(frameArray):
             self.frameIndex = 0
-        self.image = frameArray[self.frameIndex]
+        self.image = frameArray[divisorFrame]
             
         if not 'dx' in vars():
             dx = 0
