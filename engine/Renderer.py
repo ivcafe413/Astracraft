@@ -6,6 +6,7 @@ class Renderer:
         self.screen = pygame.display.set_mode((options.width, options.height))
         # Setting game in Driver now
         # self.game = options.game
+        self.game = None
 
     def render(self):
         # self.screen.fill((34, 139, 34)) # Test Forest Green
@@ -22,7 +23,7 @@ class Renderer:
         Background = self.spritesheet.getImage(1, 1, 50, 50)
         for i in range(12):
             for j in range(16):
-                # self.screen.blit(Background, [x, y])
+                self.screen.blit(Background, [x, y])
                 x = x + 50
             x = 0
             y = y + 50
