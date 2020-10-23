@@ -35,5 +35,6 @@ class Renderer:
 
     def drawDebug(self):
         # Anything that prints to screen that is debug can go here
+        self.debugSurface.fill((255, 0, 255))
         for o in self.game.gameObjects:
             o.drawDebug(self.debugSurface)
