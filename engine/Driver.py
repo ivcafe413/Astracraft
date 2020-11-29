@@ -21,11 +21,16 @@ class Driver:
     # Constructor function, creates new instance of class
     def __init__(self): # 0 additional arguments, self is self-reference
         pygame.init()
+        # Moving pygame display.set_mode out of Renderer/GameState to remove dependency
+        gameWidth = 800
+        gameHeight = 600
+        screen = pygame.display.set_mode((gameWidth, gameHeight))
 
         # Renderer, handles rendering functions on behalf of the game
         rendererOptions = type('', (), {})()
-        rendererOptions.width = 800
-        rendererOptions.height = 600
+        rendererOptions.width = gameWidth
+        rendererOptions.height = gameHeight
+        rendererOptions.screen = screen
         self.gameRenderer = Renderer(rendererOptions)
         # Renderer before GameState, since Spritesheet depends on display.set_mode
         

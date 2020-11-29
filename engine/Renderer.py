@@ -3,7 +3,9 @@ from engine.Spritesheet import Spritesheet
 
 class Renderer:
     def __init__(self, options):
-        self.screen = pygame.display.set_mode((options.width, options.height))
+        # self.screen = pygame.display.set_mode((options.width, options.height))
+        # screen now coming in as parameter, for decoupling
+        self.screen = options.screen
         self.debugSurface = pygame.surface.Surface((options.width, options.height))
         self.debugSurface.set_colorkey((255, 0, 255))
         # Setting game in Driver now

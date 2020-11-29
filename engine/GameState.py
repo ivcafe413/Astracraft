@@ -14,6 +14,10 @@ class GameState:
         # Now using SpriteGroup
         self.gameObjects = pygame.sprite.Group()
 
+        # Now tracking Game Win/Loss state variables
+        self.timeElapsed = 0 # Keep track of total time (in frames) in GameState
+        self.score = 0 # Initialize score to 0
+
         # Method to create anonymous object
         options = type('', (), {})()
         # TODO: Player/gameObject initialization needs to be config'd
@@ -29,15 +33,15 @@ class GameState:
         self.gameObjects.add(self.player)
 
         # First Hitzone
-        hitzoneOptions = type('', (), {})()
-        hitzoneOptions.x = 400
-        hitzoneOptions.y = 0
-        hitzoneOptions.w = 20
-        hitzoneOptions.h = 20
-        hitzoneOptions.color = (255, 0, 0)
+        # hitzoneOptions = type('', (), {})()
+        # hitzoneOptions.x = 400
+        # hitzoneOptions.y = 0
+        # hitzoneOptions.w = 20
+        # hitzoneOptions.h = 20
+        # hitzoneOptions.color = (255, 0, 0)
 
-        self.hitzone = Hitzone(hitzoneOptions)
-        self.gameObjects.add(self.hitzone)
+        # self.hitzone = Hitzone(hitzoneOptions)
+        # self.gameObjects.add(self.hitzone)
 
         self.collidableObjects = list(filter(lambda o: o.collidable == True, self.gameObjects))
 
@@ -56,7 +60,8 @@ class GameState:
         self.player.toggle_movement("down")
 
     def update(self):
-        collisionIndex = Index((0, 0, self.width, self.height))
+        collisionIndex = Index((0, 0, self.width, self.height)) # Create the empty collision index (Quad Tree)
+        self.timeElapsed += 1
         for o in self.gameObjects:
             o.update()
             if o.collidable:
