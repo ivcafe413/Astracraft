@@ -11,9 +11,13 @@ from tf_agents.environments import suite_gym
 from tf_agents.trajectories import time_step as ts
 
 from engine.GameState import GameState
+from engine.Helpers import GameStateToObservation
 
 class AstracraftEnvironment(py_environment.PyEnvironment):
     def __init__(self, screen_width, screen_height):
+        self.env_width = screen_width
+        self.env_height = screen_height
+
         self._observation_spec = array_spec.BoundedArraySpec(
             shape=(screen_width, screen_height, 1),
             dtype=np.int32,
@@ -27,8 +31,7 @@ class AstracraftEnvironment(py_environment.PyEnvironment):
             maximum=8,
             name='action'
         )
-        self._game_state = GameState()
-        self._state = self._game_state.gameObjects
+        self._game_state = GameState(screen_width, screen_height)
         self._episode_ended = False
 
     def action_spec(self):
@@ -38,7 +41,14 @@ class AstracraftEnvironment(py_environment.PyEnvironment):
         return self._observation_spec
     
     def _reset(self):
-        self._game_state = GameState()
-        self._state = self._game_state.gameObjects
+        self._game_state = GameState(self.env_width, self.env_height)
+        observation = GameStateToObservation(self._game_state)
+
         self._episode_ended = False
-        # return ts.restart(np.array([self._state], dtype=np.int32))
+        return ts.restart(observation)
+
+    def _step(self, action):
+        if self._episode_ended:
+            return self.reset()
+
+        

@@ -76,7 +76,7 @@ class Player(GObject):
         # pos = self.rect.x + self.screen.world_shift
         # pos = 100
         if self.moving_left:
-            dx = -(min(self.speed, self.rect.left))
+            dx = -(min(self.speed, self.left))
             self.moving = True
             self.direction = 'left '
             self.image = self.spritesheet.getImage(267, 5, 16, 45)
@@ -84,7 +84,7 @@ class Player(GObject):
             # self.image = self.WalkLeft[frame]
             frameArray = self.WalkLeft
         elif self.moving_right:
-            dx = min(self.speed, 800 - self.rect.right)
+            dx = min(self.speed, 800 - self.right)
             self.moving = True
             self.direction = 'right '
             self.image = self.spritesheet.getImage(368, 5, 16, 45)
@@ -92,7 +92,7 @@ class Player(GObject):
             # self.image = self.WalkRight[frame]
             frameArray = self.WalkRight
         if self.moving_up:
-            dy = -(min(self.speed, self.rect.top))
+            dy = -(min(self.speed, self.top))
             self.moving = True
             self.direction += 'up'
             self.image = self.spritesheet.getImage(63, 6, 24, 44)
@@ -100,7 +100,7 @@ class Player(GObject):
             # self.image = self.WalkUp[frame]
             frameArray = self.WalkUp
         elif self.moving_down:
-            dy = min(self.speed, 600 - self.rect.bottom)
+            dy = min(self.speed, 600 - self.bottom)
             self.moving = True
             self.direction += 'down'
             self.image = self.spritesheet.getImage(163, 6, 24, 44)
