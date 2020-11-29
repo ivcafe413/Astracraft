@@ -73,3 +73,14 @@ class GameState:
             if(len(collisions) > 1): # Intersecting more than self
                 # logging.info("Collision!")
                 CollisionHandler(collisions)
+        
+        if self.timeElapsed % 180 == 0:
+            hitzoneOptions = type('', (), {})()
+            hitzoneOptions.x = 400
+            hitzoneOptions.y = 0
+            hitzoneOptions.w = 20
+            hitzoneOptions.h = 20
+            hitzoneOptions.color = (255, 0, 0)
+
+            self.hitzone = Hitzone(hitzoneOptions)
+            self.gameObjects.add(self.hitzone)
