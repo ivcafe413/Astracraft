@@ -7,7 +7,7 @@ __objectTypes = {
 
 def GameStateToObservation(gameState):
     # Initialize the observation array
-    observation = np.zeros((gameState.env_width, gameState.env_height, 1), dtype=np.int32)
+    observation = np.zeros((gameState.width, gameState.height, 1), dtype=np.int32)
     for o in gameState.gameObjects:
         left = o.left
         right = o.right
