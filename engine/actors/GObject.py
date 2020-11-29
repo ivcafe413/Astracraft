@@ -1,3 +1,4 @@
+from abc import abstractmethod
 import pygame
 
 class GObject(pygame.sprite.Sprite):
@@ -52,5 +53,6 @@ class GObject(pygame.sprite.Sprite):
     def move(self, dx, dy):
         self.rect = self.rect.move(dx, dy)
  
+    @abstractmethod
     def update(self):
-        pass
+        """Update object state"""

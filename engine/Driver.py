@@ -30,7 +30,7 @@ class Driver:
         # Renderer before GameState, since Spritesheet depends on display.set_mode
         
         # Game state object, tracks state of game and all objects in game
-        self.gameState = GameState() # Example of tightly coupled code.
+        self.gameState = GameState(800, 600) # Example of tightly coupled code.
         # TODO: Refactor coupled code, separate dependencies
         self.gameRenderer.game = self.gameState
 

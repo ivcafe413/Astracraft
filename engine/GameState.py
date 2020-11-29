@@ -7,7 +7,9 @@ from engine.actors.Hitzone import Hitzone
 from engine.CollisionHandler import CollisionHandler
 
 class GameState:
-    def __init__(self):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
         # self.gameObjects = [] # Array of game objects
         # Now using SpriteGroup
         self.gameObjects = pygame.sprite.Group()
@@ -54,7 +56,7 @@ class GameState:
         self.player.toggle_movement("down")
 
     def update(self):
-        collisionIndex = Index((0, 0, 800, 600))
+        collisionIndex = Index((0, 0, self.width, self.height))
         for o in self.gameObjects:
             o.update()
             if o.collidable:
