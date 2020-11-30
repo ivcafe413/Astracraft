@@ -83,7 +83,9 @@ class AstracraftEnvironment(py_environment.PyEnvironment):
             reward = self._game_state.score
             return ts.termination(observation, reward)
         else:
-            return ts.transition(observation, reward=0.0)
+            time_step = ts.transition(observation, reward=0.0)
+            print("Frames Elapsed: ", self._game_state.timeElapsed)
+            return time_step
             
 
         

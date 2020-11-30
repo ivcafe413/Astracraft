@@ -10,6 +10,13 @@
             "request": "launch",
             "program": "${workspaceFolder}/entrypoint.py",
             "console": "internalConsole"
+        },
+        {
+            "name": "Current File, external",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "externalTerminal"
         }
     ]
 }
