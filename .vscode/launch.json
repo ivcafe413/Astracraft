@@ -12,11 +12,11 @@
             "console": "internalConsole"
         },
         {
-            "name": "Current File, external",
+            "name": "Current File, internal Console",
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "console": "externalTerminal"
+            "console": "internalConsole"
         }
     ]
 }
