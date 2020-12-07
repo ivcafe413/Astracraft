@@ -25,7 +25,7 @@ class AstracraftEnvironment(py_environment.PyEnvironment):
             name='observation'
         )
         self._action_spec = array_spec.BoundedArraySpec(
-            shape=(1,),
+            shape=(),
             dtype=np.int32,
             minimum=0,
             maximum=8,
@@ -84,7 +84,7 @@ class AstracraftEnvironment(py_environment.PyEnvironment):
             return ts.termination(observation, reward)
         else:
             time_step = ts.transition(observation, reward=0.0)
-            print("Frames Elapsed: ", self._game_state.timeElapsed)
+            # print("Frames Elapsed: ", self._game_state.timeElapsed)
             return time_step
             
 
