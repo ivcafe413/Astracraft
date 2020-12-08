@@ -1,4 +1,4 @@
-import pygame
+# import pygame
 import tensorflow as tf
 import matplotlib
 import matplotlib.pyplot as plt
@@ -9,7 +9,7 @@ from tf_agents.agents.dqn import dqn_agent
 from tf_agents.utils import common
 from tf_agents.trajectories import trajectory
 from tf_agents.replay_buffers import tf_uniform_replay_buffer
-from tf_agents.drivers import dynamic_episode_driver
+from tf_agents.drivers import dynamic_step_driver, dynamic_episode_driver
 from tf_agents.metrics import tf_metrics
 
 from environment.AstracraftEnvironment import AstracraftEnvironment
@@ -86,15 +86,6 @@ replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
 
 replay_observers = [replay_buffer.add_batch, tf_metrics.AverageReturnMetric()]
 
-# Dataset read, batches of 2 items with 2 timesteps per item
-# batch_size = 2
-# dataset = replay_buffer.as_dataset(
-#     # num_parallel_calls=3, 
-#     sample_batch_size=batch_size, 
-#     num_steps=2)#.prefetch(3)
-
-# iterator = iter(dataset)
-
 episode_driver = dynamic_episode_driver.DynamicEpisodeDriver(
     train_env,
     agent.collect_policy,
@@ -125,7 +116,8 @@ for i in range(num_episode_iterations):
 #     if step % log_interval == 0:
 #         print('step = {0}: loss = {1}'.format(step, train_loss))
 
-#     if step % eval_interval == 0:
-#         avg_return = compute_average_return(eval_env, agent.policy, num_eval_episodes)
-#         print('step = {0}: Average Return = {1}'.format(step, avg_return))
-#         returns.append(avg_return)
+    # TODO: Replace the evaluation
+    # if step % eval_interval == 0:
+    #     avg_return = compute_average_return(eval_env, agent.policy, num_eval_episodes)
+    #     print('step = {0}: Average Return = {1}'.format(step, avg_return))
+    #     returns.append(avg_return)
