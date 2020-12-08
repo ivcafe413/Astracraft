@@ -55,17 +55,18 @@ q_network.validate_specs(
 print("Agent instantiation...")
 # Requires Optimizer, Loss Function, Integer Step Counter
 learning_rate = 1e-3  # @param {type:"number"}
-optimizer = tf.compat.v1.train.AdamOptimizer() #default learning_rate = 1e-3, or 0.001
+optimizer = tf.compat.v1.train.AdamOptimizer()
+#default learning_rate = 1e-3, or 0.001
 
 train_step_counter = tf.Variable(0)
 
-agent = dqn_agent.DqnAgent(
+agent = dqn_agent.DqnAgent( # failing with non-scalar action spec
     train_env.time_step_spec(),
     train_env.action_spec(),
     q_network=q_net,
     optimizer=optimizer,
     td_errors_loss_fn=common.element_wise_squared_loss,
-    train_step_counter=train_step_counter # failing with non-scalar action spec
+    train_step_counter=train_step_counter
 )
 
 print("Initializing DGN Agent...")
@@ -78,13 +79,14 @@ collect_policy = agent.collect_policy
 
 # Setup a replay buffer
 print("Creating replay buffer...")
-replay_buffer_max_length = 1800 # One full max episode step count (30 seconds * 60 FPS)
+replay_buffer_max_length = 3600 # One full max episode step count (30 seconds * 60 FPS)
 replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
     data_spec=agent.collect_data_spec,
     batch_size=train_env.batch_size,
     max_length=replay_buffer_max_length)
 
-replay_observers = [replay_buffer.add_batch, tf_metrics.AverageReturnMetric()]
+return_metric = tf_metrics.AverageReturnMetric()
+replay_observers = [replay_buffer.add_batch, return_metric]
 
 episode_driver = dynamic_episode_driver.DynamicEpisodeDriver(
     train_env,
@@ -94,13 +96,18 @@ episode_driver = dynamic_episode_driver.DynamicEpisodeDriver(
 )
 
 num_episode_iterations = 100 # Number of episodes to train on
+loss_values = []
+return_values = []
+
 # Begin Training the Agent
 print("Begin training DQN network...")
 for i in range(num_episode_iterations):
     episode_driver.run()
     experience = replay_buffer.gather_all()
-    agent.train(experience)
+    loss = agent.train(experience)
     replay_buffer.clear()
+    loss_values.append(loss)
+    return_values.append(return_metric.result())
 
 # for _ in range(num_iterations) # See 5 lines above
 # for i in range(10000):
@@ -116,8 +123,6 @@ for i in range(num_episode_iterations):
 #     if step % log_interval == 0:
 #         print('step = {0}: loss = {1}'.format(step, train_loss))
 
-    # TODO: Replace the evaluation
-    # if step % eval_interval == 0:
-    #     avg_return = compute_average_return(eval_env, agent.policy, num_eval_episodes)
-    #     print('step = {0}: Average Return = {1}'.format(step, avg_return))
-    #     returns.append(avg_return)
+plt.plot(loss_values)
+plt.ylabel('Loss Value')
+plt.xlable('Number of Episodes')
