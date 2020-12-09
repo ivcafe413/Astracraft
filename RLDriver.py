@@ -80,10 +80,11 @@ collect_policy = agent.collect_policy
 
 # Setup a replay buffer
 print("Creating replay buffer... with batch size {0}".format(train_env.batch_size))
-replay_buffer_max_length = 200
+replay_buffer_max_length = 200 # Max of 100 frames in an episode, 2 episodes
 replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
     data_spec=agent.collect_data_spec,
-    batch_size=train_env.batch_size,
+    batch_size=train_env.batch_size, # batch size of 1 = 1 episode per run
+    dataset_window_shift=1, # Trying this for better training # Nope
     max_length=replay_buffer_max_length)
 
 # Trying Episodic Replay buffer
@@ -94,12 +95,12 @@ replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
 # Must use dataset to iterate replay buffer, gather_all is deprecated
 print("As dataset...")
 dataset = replay_buffer.as_dataset(
-    sample_batch_size=8,
+    sample_batch_size=1,
     num_steps=2,
-    single_deterministic_pass=True,
-    num_parallel_calls=2
+    num_parallel_calls=2,
+    # single_deterministic_pass=True
 )
-# iterator = iter(dataset)
+iterator = iter(dataset)
 
 return_metric = tf_metrics.AverageReturnMetric()
 replay_observers = [replay_buffer.add_batch, return_metric]
@@ -112,7 +113,7 @@ episode_driver = dynamic_episode_driver.DynamicEpisodeDriver(
 )
 
 # Number of episodes batches to train on
-num_iterations = 200 # 100 was about halfway I think # 10*5 not enough
+num_iterations = 100 # 100 was about halfway I think # 10*5 not enough
 loss_values = []
 return_values = []
 
@@ -123,15 +124,18 @@ for i in range(num_iterations):
     episode_driver.run()
     # buffer_frames = replay_buffer.num_frames()
     # print("Replay Buffer: {0} frames".format(replay_buffer.num_frames()))
-    iterator = iter(dataset)
+    # iterator = iter(dataset)
     # for _ in range(buffer_frames):
-    while True:
+    frame_process_count = 0
+    for _ in range(200): # 200 * 100 = 20K training steps
         try:
             experience, _ = next(iterator)
             # print("Iterating...")
+            frame_process_count += 1
             loss_info = agent.train(experience)
             loss_values.append(loss_info.loss)
         except StopIteration:
+            # print("Iterated {0} frames...".format(frame_process_count))
             break
 
         # step = agent.train_step_counter.numpy()
@@ -144,14 +148,14 @@ for i in range(num_iterations):
     
     # experience = replay_buffer.gather_all()
     # agent.train(experience)
-    replay_buffer.clear()
+    # replay_buffer.clear()
     return_values.append(avg_return)
 
 # plt.plot(range(agent.train_step_counter.numpy()), loss_values)
 # plt.ylabel('Loss Value')
 # plt.xlabel('Number of Steps')
 
-plt.plot(range(num_iterations), return_values)
+plt.plot(return_values)
 plt.ylabel('Average Return')
 plt.xlabel('Number of Training Loops/Iterations')
 
@@ -159,6 +163,6 @@ plt.show(block=True)
 
 plt.plot(loss_values)
 plt.ylabel('Loss Value')
-plt.xlabel('Number of Training Steps')
+plt.xlabel('Number of Training Steps/Frames')
 
 plt.show(block=True)
