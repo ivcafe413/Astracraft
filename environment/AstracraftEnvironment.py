@@ -19,7 +19,7 @@ class AstracraftEnvironment(py_environment.PyEnvironment):
         self.env_height = screen_height
 
         self._observation_spec = array_spec.BoundedArraySpec(
-            shape=(screen_width, screen_height, 1),
+            shape=(2, 3),
             dtype=np.int32,
             minimum=0,
             name='observation'

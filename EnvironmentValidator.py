@@ -1,5 +1,5 @@
 from tf_agents.environments import utils
-import pygame
+# import pygame
 from environment.AstracraftEnvironment import AstracraftEnvironment
 
 # pygame.display.set_mode((800, 600))

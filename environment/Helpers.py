@@ -7,17 +7,19 @@ __objectTypes = {
 
 def GameStateToObservation(gameState):
     # Initialize the observation array
-    observation = np.zeros((gameState.width, gameState.height, 1), dtype=np.int32)
+    # observation = np.zeros((2,3), dtype=np.int32)
+    observation = []
     for o in gameState.gameObjects:
-        left = o.left
-        right = o.right
-        top = o.top
-        bottom = o.bottom
-
+        # left = o.left
+        # right = o.right
+        # top = o.top
+        # bottom = o.bottom
+        observation.append((o.rect.x, o.rect.y, __objectTypes.get(o.__class__.__name__)))
         # Set values in the observation array
-        for x in range(left, right):
-            for y in range(top, bottom):
-                observation[x][y] = np.array([__objectTypes.get(o.__class__.__name__)], dtype=np.int32)
+        # for x in range(left, right):
+        #     for y in range(top, bottom):
+        #         observation[x][y] = np.array([__objectTypes.get(o.__class__.__name__)], dtype=np.int32)
     
     # Return the modified observation array
-    return observation
+    print("Observation: {0}".format(observation))
+    return np.array(observation, dtype=np.int32)
