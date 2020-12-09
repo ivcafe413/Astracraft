@@ -72,6 +72,8 @@ class GameState:
         # self.keyupHandlers[pygame.K_UP].append(self.action_up)
         # self.keyupHandlers[pygame.K_DOWN].append(self.action_down)
 
+        self.initial_distance = math.hypot(self.player.rect.x-self.hitzone.rect.x, self.player.rect.y-self.hitzone.rect.y)
+
     # Event Handler function
     def handle_events(self):
         # pygame.event.get() clears the event queue, prevents crashing/freezing
@@ -93,7 +95,7 @@ class GameState:
                 # self.gameRenderer.screen.blit(text, textRect)
                 # pygame.display.flip()
                 self.gameOver = True
-                self.score = (1800 - self.timeElapsed)/60 # 30 seconds - (frames * 60FPS )
+                self.score = 100 - self.timeElapsed
                 # pygame.time.wait(1500)
                 # pygame.quit()
                 # sys.exit(0)
@@ -137,7 +139,8 @@ class GameState:
         if(self.timeElapsed >= 100): # 30 seconds * 60fps = 1800 frames
             # GAME OVER - LOSE
             self.gameOver = True
-            self.score = -(math.hypot(self.player.rect.x-self.hitzone.rect.x, self.player.rect.y-self.hitzone.rect.y)) # - distance from hitbox
+            # self.score = -(math.hypot(self.player.rect.x-self.hitzone.rect.x, self.player.rect.y-self.hitzone.rect.y)) # - distance from hitbox
+            self.score = self.percentage_of_goal
             return
         
         collisionIndex = Index((0, 0, self.width, self.height)) # Create the empty collision index (Quad Tree)
@@ -148,12 +151,15 @@ class GameState:
 
         for i in self.collidableObjects:
             collisions = collisionIndex.intersect((i.rect.left, i.rect.top, i.rect.right, i.rect.bottom))
-            
             if(len(collisions) > 1): # Intersecting more than self
                 # logging.info("Collision!")
                 CollisionHandler(collisions)
 
+        # Increment time
         self.timeElapsed += 1
+        # Calculate percentage of distance from starting point to goal for reward
+        current_distance = math.hypot(self.player.rect.x-self.hitzone.rect.x, self.player.rect.y-self.hitzone.rect.y)
+        self.percentage_of_goal = (self.initial_distance - current_distance) / self.initial_distance
         # Process current event queue
         self.handle_events()
         

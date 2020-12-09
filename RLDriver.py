@@ -80,7 +80,7 @@ collect_policy = agent.collect_policy
 
 # Setup a replay buffer
 print("Creating replay buffer... with batch size {0}".format(train_env.batch_size))
-replay_buffer_max_length = 500
+replay_buffer_max_length = 200
 replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
     data_spec=agent.collect_data_spec,
     batch_size=train_env.batch_size,
@@ -94,12 +94,12 @@ replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
 # Must use dataset to iterate replay buffer, gather_all is deprecated
 print("As dataset...")
 dataset = replay_buffer.as_dataset(
-    sample_batch_size=train_env.batch_size,
+    sample_batch_size=8,
     num_steps=2,
-    single_deterministic_pass=False,
+    single_deterministic_pass=True,
     num_parallel_calls=2
 )
-iterator = iter(dataset)
+# iterator = iter(dataset)
 
 return_metric = tf_metrics.AverageReturnMetric()
 replay_observers = [replay_buffer.add_batch, return_metric]
@@ -108,58 +108,57 @@ episode_driver = dynamic_episode_driver.DynamicEpisodeDriver(
     train_env,
     agent.collect_policy,
     replay_observers,
-    num_episodes=5
+    num_episodes=2
 )
 
-num_episode_iterations = 10 # Number of episodes batches to train on
+# Number of episodes batches to train on
+num_iterations = 200 # 100 was about halfway I think # 10*5 not enough
 loss_values = []
 return_values = []
 
 # Begin Training the Agent
 print("Begin training DQN network...")
-for i in range(num_episode_iterations):
+for i in range(num_iterations):
     print("Iteration {0}...".format(i))
     episode_driver.run()
-    buffer_frames = replay_buffer.num_frames()
-    print("Replay Buffer Frames: {0}".format(replay_buffer.num_frames()))
-    for _ in range(buffer_frames):
-        experience, _ = next(iterator)
-        loss_info = agent.train(experience)
-        loss_values.append(loss_info.loss)
+    # buffer_frames = replay_buffer.num_frames()
+    # print("Replay Buffer: {0} frames".format(replay_buffer.num_frames()))
+    iterator = iter(dataset)
+    # for _ in range(buffer_frames):
+    while True:
+        try:
+            experience, _ = next(iterator)
+            # print("Iterating...")
+            loss_info = agent.train(experience)
+            loss_values.append(loss_info.loss)
+        except StopIteration:
+            break
 
         # step = agent.train_step_counter.numpy()
         # if step % 100 == 0:
         #     print("Step {0}: Loss = {1}".format(step, loss_info.loss))
 
-    print("Iteration {0} over...".format(i))
+    # print("Iteration {0} over...".format(i))
     avg_return = return_metric.result()
-    print("Average return this run: {0}".format(avg_return))
+    print("Average Return: {0}".format(avg_return))
     
     # experience = replay_buffer.gather_all()
     # agent.train(experience)
     replay_buffer.clear()
     return_values.append(avg_return)
 
-# for _ in range(num_iterations) # See 5 lines above
-# for i in range(10000):
-#     # print (f"Step: {i}") # Py 3.6 String Interpolation
-#     collect_data(train_env, agent.collect_policy, replay_buffer, collect_steps_per_iteration)
-
-#     # Sample a batch of data from the buffer and update the agent's network.
-#     experience, unused_info = next(iterator)
-#     train_loss = agent.train(experience).loss
-
-#     step = agent.train_step_counter.numpy()
-
-#     if step % log_interval == 0:
-#         print('step = {0}: loss = {1}'.format(step, train_loss))
-
 # plt.plot(range(agent.train_step_counter.numpy()), loss_values)
 # plt.ylabel('Loss Value')
 # plt.xlabel('Number of Steps')
 
-plt.plot(range(num_episode_iterations), return_values)
+plt.plot(range(num_iterations), return_values)
 plt.ylabel('Average Return')
-plt.xlabel('Number of Training Loops')
+plt.xlabel('Number of Training Loops/Iterations')
+
+plt.show(block=True)
+
+plt.plot(loss_values)
+plt.ylabel('Loss Value')
+plt.xlabel('Number of Training Steps')
 
 plt.show(block=True)
