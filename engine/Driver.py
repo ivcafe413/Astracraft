@@ -1,7 +1,5 @@
 # System level imports
-import sys
 import logging
-from collections import defaultdict
 
 # Third-party imports
 import pygame
@@ -9,8 +7,6 @@ import pygame
 # Project package imports
 from engine.GameState import GameState
 from engine.Renderer import Renderer
-
-from constants import VICTORY_EVENT
 
 # Constants
 TARGET_FPS = 60
@@ -20,22 +16,22 @@ LOOP_MS_PF = (1 / TARGET_FPS) * 1000
 class Driver:
     # Constructor function, creates new instance of class
     def __init__(self): # 0 additional arguments, self is self-reference
-        pygame.init()
+        # pygame.init()
         # Moving pygame display.set_mode out of Renderer/GameState to remove dependency
         gameWidth = 800
         gameHeight = 600
-        screen = pygame.display.set_mode((gameWidth, gameHeight))
+        # Game state object, tracks state of game and all objects in game
+        self.gameState = GameState(gameWidth, gameHeight)
+        # screen = pygame.display.set_mode((gameWidth, gameHeight))
 
         # Renderer, handles rendering functions on behalf of the game
         rendererOptions = type('', (), {})()
         rendererOptions.width = gameWidth
         rendererOptions.height = gameHeight
-        rendererOptions.screen = screen
+        # rendererOptions.screen = screen
         self.gameRenderer = Renderer(rendererOptions)
         # Renderer before GameState, since Spritesheet depends on display.set_mode
         
-        # Game state object, tracks state of game and all objects in game
-        self.gameState = GameState(800, 600) # Example of tightly coupled code.
         # TODO: Refactor coupled code, separate dependencies
         self.gameRenderer.game = self.gameState
 
@@ -43,56 +39,13 @@ class Driver:
         self.clock = pygame.time.Clock()
         self.currentTime = 0
 
-        # Event Handler dictionaries
-        self.keydownHandlers = defaultdict(list)
-        self.keyupHandlers = defaultdict(list)
-
-    # Event Handler function
-    def handle_events(self):
-        # pygame.event.get() clears the event queue, prevents crashing/freezing
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit(0)
-            elif event.type == pygame.KEYDOWN:
-                for handler in self.keydownHandlers[event.key]:
-                    handler(event.type)
-            elif event.type == pygame.KEYUP:
-                for handler in self.keyupHandlers[event.key]:
-                    handler(event.type)
-            elif event.type == VICTORY_EVENT:
-                font = pygame.font.SysFont("sysfont10", 48)
-                text = font.render("VICTORY!!!", False, (255, 255, 255))
-                textRect = text.get_rect()
-                textRect.center = (400, 300)
-                self.gameRenderer.screen.blit(text, textRect)
-                pygame.display.flip()
-                pygame.time.wait(1500)
-                pygame.quit()
-                sys.exit(0)
-
     def start(self):
-        # Initial Key Bindings
-        # Sets actions for both key up and key down
-        # Could also handle other events (mouse events, etc.)
-        self.keydownHandlers[pygame.K_LEFT].append(self.gameState.action_left)
-        self.keydownHandlers[pygame.K_RIGHT].append(self.gameState.action_right)
-        self.keydownHandlers[pygame.K_UP].append(self.gameState.action_up)
-        self.keydownHandlers[pygame.K_DOWN].append(self.gameState.action_down)
-
-        self.keyupHandlers[pygame.K_LEFT].append(self.gameState.action_left)
-        self.keyupHandlers[pygame.K_RIGHT].append(self.gameState.action_right)
-        self.keyupHandlers[pygame.K_UP].append(self.gameState.action_up)
-        self.keyupHandlers[pygame.K_DOWN].append(self.gameState.action_down)
-
         # Game Loop Start
         # TODO: Implement some kind of "done/not done", not infinite loop
         while True:
             # Increment time tracker with ms passed since last call
             self.currentTime += self.clock.get_time()
-            # Process current event queue
-            self.handle_events()
-
+            
             # While enough time has passed to process at least one frame
             while self.currentTime >= LOOP_MS_PF:
                 # Update the game state one tick for each frame time block

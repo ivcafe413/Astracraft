@@ -1,4 +1,4 @@
-from itertools import islice
+# from itertools import islice
 
 def PlayerHitzoneCollision(player, hitzone):
     # Player hit a hitzone, run whatever hitzone function needed

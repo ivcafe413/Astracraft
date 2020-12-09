@@ -75,7 +75,7 @@ class AstracraftEnvironment(py_environment.PyEnvironment):
         self._game_state.update()
 
         # Episode ends when time runs out, for a simple situation
-        if self._game_state.timeElapsed >= 1800: # 60 FPS * 30 seconds = 1800 time steps
+        if self._game_state.gameOver:
             self._episode_ended = True
 
         observation = GameStateToObservation(self._game_state)
@@ -84,8 +84,8 @@ class AstracraftEnvironment(py_environment.PyEnvironment):
             return ts.termination(observation, reward)
         else:
             time_step = ts.transition(observation, reward=0.0)
-            # print("Frames Elapsed: ", self._game_state.timeElapsed)
+            # frames = self._game_state.timeElapsed
+            # if frames % 200 == 0:
+            #     print("Frames Elapsed: ", self._game_state.timeElapsed)
             return time_step
             
-
-        

@@ -21,5 +21,5 @@ def GameStateToObservation(gameState):
         #         observation[x][y] = np.array([__objectTypes.get(o.__class__.__name__)], dtype=np.int32)
     
     # Return the modified observation array
-    print("Observation: {0}".format(observation))
+    # print("Observation: {0}".format(observation))
     return np.array(observation, dtype=np.int32)
