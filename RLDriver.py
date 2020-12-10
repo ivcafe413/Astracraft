@@ -22,7 +22,7 @@ print(tf.version.VERSION)
 # ''' HYPERPARAMETERS'''
 # q_net_layers = (100,) # fc_layer_params
 q_net_layers = (75, 40)
-num_iterations = 100 # Number of episodes batches to train on
+num_iterations = 200 # Number of episodes batches to train on
 collection_steps_per_iteration = 100 # Training steps per iteration, random sampling
 replay_buffer_max_length = 200 # Max of 100 frames in an episode, 2 episodes
 deterministic_sampling = False # False = random, True = in order
