@@ -19,6 +19,15 @@ tf.compat.v1.enable_v2_behavior()
 print("Tensorflow version:")
 print(tf.version.VERSION)
 
+# ''' HYPERPARAMETERS'''
+# q_net_layers = (100,) # fc_layer_params
+q_net_layers = (75, 40)
+num_iterations = 100 # Number of episodes batches to train on
+collection_steps_per_iteration = 100 # Training steps per iteration, random sampling
+replay_buffer_max_length = 200 # Max of 100 frames in an episode, 2 episodes
+deterministic_sampling = False # False = random, True = in order
+# ''' END HYPERPARAMETERS'''
+
 # Set up display for rendering our Astracraft game
 # We'll use pygame for this
 pygame.init()
@@ -41,7 +50,6 @@ print(train_env.action_spec())
 # print("Validating specs...")
 # Begin setting up the DQN Agent (Q-network)
 print("Network instantiation...")
-q_net_layers = (100,) # fc_layer_params
 q_net = q_network.QNetwork(
     train_env.observation_spec(),
     train_env.action_spec(),
@@ -80,12 +88,15 @@ collect_policy = agent.collect_policy
 
 # Setup a replay buffer
 print("Creating replay buffer... with batch size {0}".format(train_env.batch_size))
-replay_buffer_max_length = 200 # Max of 100 frames in an episode, 2 episodes
 replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
     data_spec=agent.collect_data_spec,
     batch_size=train_env.batch_size, # batch size of 1 = 1 episode per run
-    dataset_window_shift=1, # Trying this for better training # Nope
+    # dataset_window_shift=1, # Trying this for better training # Nope
     max_length=replay_buffer_max_length)
+
+# replay_buffer = episodic_replay_buffer.EpisodicReplayBuffer(
+#     data_spec=agent.collect_data_spec
+# )
 
 # Trying Episodic Replay buffer
 # ep_replay_buffer = episodic_replay_buffer.EpisodicReplayBuffer(
@@ -95,12 +106,19 @@ replay_buffer = tf_uniform_replay_buffer.TFUniformReplayBuffer(
 # Must use dataset to iterate replay buffer, gather_all is deprecated
 print("As dataset...")
 dataset = replay_buffer.as_dataset(
-    sample_batch_size=1,
+    sample_batch_size=train_env.batch_size,
     num_steps=2,
     num_parallel_calls=2,
-    # single_deterministic_pass=True
+    single_deterministic_pass=deterministic_sampling
 )
+
+# dataset = replay_buffer.as_dataset( # From Episodic
+#     num_steps=None, # Return full length episodes
+#     # single_deterministic_pass
+# )
+
 iterator = iter(dataset)
+# iterator = dataset.make_initializable_iterator()
 
 return_metric = tf_metrics.AverageReturnMetric()
 replay_observers = [replay_buffer.add_batch, return_metric]
@@ -112,8 +130,6 @@ episode_driver = dynamic_episode_driver.DynamicEpisodeDriver(
     num_episodes=2
 )
 
-# Number of episodes batches to train on
-num_iterations = 100 # 100 was about halfway I think # 10*5 not enough
 loss_values = []
 return_values = []
 
@@ -126,12 +142,13 @@ for i in range(num_iterations):
     # print("Replay Buffer: {0} frames".format(replay_buffer.num_frames()))
     # iterator = iter(dataset)
     # for _ in range(buffer_frames):
-    frame_process_count = 0
-    for _ in range(200): # 200 * 100 = 20K training steps
+    # frame_process_count = 0
+    for _ in range(collection_steps_per_iteration):
+    # for experience, _ in dataset: # Deterministic loop
         try:
             experience, _ = next(iterator)
             # print("Iterating...")
-            frame_process_count += 1
+            # frame_process_count += 1
             loss_info = agent.train(experience)
             loss_values.append(loss_info.loss)
         except StopIteration:
@@ -145,15 +162,7 @@ for i in range(num_iterations):
     # print("Iteration {0} over...".format(i))
     avg_return = return_metric.result()
     print("Average Return: {0}".format(avg_return))
-    
-    # experience = replay_buffer.gather_all()
-    # agent.train(experience)
-    # replay_buffer.clear()
     return_values.append(avg_return)
-
-# plt.plot(range(agent.train_step_counter.numpy()), loss_values)
-# plt.ylabel('Loss Value')
-# plt.xlabel('Number of Steps')
 
 plt.plot(return_values)
 plt.ylabel('Average Return')

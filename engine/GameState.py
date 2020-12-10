@@ -73,6 +73,7 @@ class GameState:
         # self.keyupHandlers[pygame.K_DOWN].append(self.action_down)
 
         self.initial_distance = math.hypot(self.player.rect.x-self.hitzone.rect.x, self.player.rect.y-self.hitzone.rect.y)
+        self.max_distance = math.hypot(400, 600)
 
     # Event Handler function
     def handle_events(self):
@@ -95,7 +96,7 @@ class GameState:
                 # self.gameRenderer.screen.blit(text, textRect)
                 # pygame.display.flip()
                 self.gameOver = True
-                self.score = 100 - self.timeElapsed
+                self.score = 150 - self.timeElapsed
                 # pygame.time.wait(1500)
                 # pygame.quit()
                 # sys.exit(0)
@@ -115,13 +116,6 @@ class GameState:
         self.player.toggle_movement("down")
 
     def update(self):
-        if(self.timeElapsed >= 100): # 30 seconds * 60fps = 1800 frames
-            # GAME OVER - LOSE
-            self.gameOver = True
-            # self.score = -(math.hypot(self.player.rect.x-self.hitzone.rect.x, self.player.rect.y-self.hitzone.rect.y)) # - distance from hitbox
-            self.score = self.percentage_of_goal
-            return
-        
         collisionIndex = Index((0, 0, self.width, self.height)) # Create the empty collision index (Quad Tree)
         for o in self.gameObjects:
             o.update()
@@ -134,10 +128,21 @@ class GameState:
                 # logging.info("Collision!")
                 CollisionHandler(collisions)
 
-        # Increment time
-        self.timeElapsed += 1
-        # Calculate percentage of distance from starting point to goal for reward
-        current_distance = math.hypot(self.player.rect.x-self.hitzone.rect.x, self.player.rect.y-self.hitzone.rect.y)
-        self.percentage_of_goal = (self.initial_distance - current_distance) / self.initial_distance
         # Process current event queue
         self.handle_events()
+        if(self.gameOver):
+            return
+        elif(self.timeElapsed >= 100): # 30 seconds * 60fps = 1800 frames
+            # GAME OVER - LOSE
+            self.gameOver = True
+            # self.score = -(math.hypot(self.player.rect.x-self.hitzone.rect.x, self.player.rect.y-self.hitzone.rect.y)) # - distance from hitbox
+            return
+        else:
+            # Increment time
+            self.timeElapsed += 1
+            # Calculate percentage of distance from starting point to goal for reward
+            current_distance = math.hypot(self.player.rect.x-self.hitzone.rect.x, self.player.rect.y-self.hitzone.rect.y)
+            self.score = ((self.max_distance - current_distance) / self.max_distance) * 10
+            # current_distance = math.hypot(self.player.rect.x-self.hitzone.rect.x, self.player.rect.y-self.hitzone.rect.y)
+            # self.percentage_of_goal = (self.initial_distance - current_distance) / self.initial_distance
+        

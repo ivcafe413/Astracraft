@@ -83,7 +83,7 @@ class AstracraftEnvironment(py_environment.PyEnvironment):
             reward = self._game_state.score
             return ts.termination(observation, reward)
         else:
-            reward = self._game_state.percentage_of_goal
+            reward = self._game_state.score
             time_step = ts.transition(observation, reward)
             # frames = self._game_state.timeElapsed
             # if frames % 200 == 0:
